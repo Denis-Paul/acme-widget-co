@@ -138,10 +138,3 @@ class Offers::BuyTwoGetOneFree < Offers::Base
   end
 end
 ```
-
-## Development Notes
-
-- Ruby version: 2.5+ (uses frozen_string_literal)
-- No external dependencies required
-- All monetary calculations use **cents (integers)** to avoid floating-point precision errors
-- Final totals are converted to dollars for display
