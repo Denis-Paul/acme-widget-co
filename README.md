@@ -80,9 +80,9 @@ require_relative 'lib/offers/buy_one_get_one_half_price'
 
 # Setup catalogue - prices are in cents to avoid floating-point errors
 catalogue = {
-  'R01' => Product.new(code: 'R01', price_cents: 3295),  # Red Widget - $32.95
-  'G01' => Product.new(code: 'G01', price_cents: 2495),  # Green Widget - $24.95
-  'B01' => Product.new(code: 'B01', price_cents: 795)    # Blue Widget - $7.95
+  'R01' => Product.new('Red Widget', 'R01', 3295),
+  'G01' => Product.new('Green Widget', 'G01', 2495),
+  'B01' => Product.new('Blue Widget', 'B01', 795)
 }.freeze
 
 delivery_rule = DeliveryRules::Tiered.new([
@@ -134,28 +134,9 @@ class Offers::BuyTwoGetOneFree < Offers::Base
   def apply(items)
     matching = items.select { |i| i.code == @product_code }
     free_items = matching.size / 3
-    matching.first.price_cents * free_items  # Returns discount in cents
+    matching.first.price * free_items  # Returns discount in cents
   end
 end
-```
-
-## Project Structure
-
-```
-acme-widget-co/
-├── lib/
-│   ├── basket.rb                          # Main basket class
-│   ├── product.rb                         # Product value object
-│   ├── delivery_rules/
-│   │   ├── base.rb                        # Delivery rule interface
-│   │   └── tiered.rb                      # Tiered delivery implementation
-│   └── offers/
-│       ├── base.rb                        # Offer interface
-│       └── buy_one_get_one_half_price.rb  # BOGOHP implementation
-├── bin/
-│   └── run.rb                             # Example runner with constants
-├── Gemfile                                # Dependencies
-└── README.md
 ```
 
 ## Development Notes
