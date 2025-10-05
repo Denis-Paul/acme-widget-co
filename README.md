@@ -106,35 +106,65 @@ puts basket.total # => 37.85
 
 ## Extending the System
 
-### Adding a New Delivery Rule
+The Strategy Pattern makes it easy to add new delivery rules and offers without modifying existing code.
+
+### Example: Free Over Threshold Delivery Rule
+
+We've implemented `FreeOverThreshold` - free delivery when order exceeds a threshold:
+
 ```ruby
-class DeliveryRules::FlatRate < DeliveryRules::Base
-  def initialize(cost_cents)
-    @cost_cents = cost_cents
+class DeliveryRules::FreeOverThreshold < Base
+  def initialize(threshold_cents:, standard_cost_cents:)
+    @threshold_cents = threshold_cents
+    @standard_cost_cents = standard_cost_cents
   end
 
-  # @param subtotal_cents [Integer] Order subtotal in cents
-  # @return [Integer] Delivery cost in cents
   def cost_for(subtotal_cents)
-    @cost_cents  # Always the same cost
+    subtotal_cents >= @threshold_cents ? 0 : @standard_cost_cents
   end
 end
 
-# Usage
-delivery_rule = DeliveryRules::FlatRate.new(500)  # Always $5.00
+# Usage: Free delivery on orders $75+, otherwise $6.95
+delivery_rule = DeliveryRules::FreeOverThreshold.new(
+  threshold_cents: 7500,
+  standard_cost_cents: 695
+)
 ```
 
-### Adding a New Offer
+### Example: Bulk Discount Offer
+
+We've implemented `BulkDiscount` - discount when buying 3+ of the same item:
+
 ```ruby
-class Offers::BuyTwoGetOneFree < Offers::Base
-  def initialize(product_code:)
+class Offers::BulkDiscount < Base
+  def initialize(product_code:, min_quantity:, discount_per_item_cents:)
     @product_code = product_code
+    @min_quantity = min_quantity
+    @discount_per_item_cents = discount_per_item_cents
   end
 
   def apply(items)
     matching = items.select { |i| i.code == @product_code }
-    free_items = matching.size / 3
-    matching.first.price * free_items  # Returns discount in cents
+    return 0 if matching.count < @min_quantity
+    
+    matching.count * @discount_per_item_cents
   end
 end
+
+# Usage: Buy 3+ Green Widgets, save $2.00 per item
+offer = Offers::BulkDiscount.new(
+  product_code: 'G01',
+  min_quantity: 3,
+  discount_per_item_cents: 200
+)
 ```
+
+### Running Extended Examples
+
+```bash
+ruby bin/run_extended_examples.rb
+```
+
+This demonstrates:
+- **FreeOverThreshold**: Orders under $75 pay $6.95 delivery, $75+ get free delivery
+- **BulkDiscount**: Buy 3+ Green Widgets at $2 off each ($24.95 → $22.95)
