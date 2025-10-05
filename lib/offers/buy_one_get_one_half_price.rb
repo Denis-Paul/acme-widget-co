@@ -20,7 +20,7 @@ module Offers
 
       # Calculate discount for every second item (integer division, no rounding needed)
       num_of_pairs = matching_items.count / 2
-      discount_per_item_cents = matching_items.first.price_cents / 2
+      discount_per_item_cents = matching_items.first.price / 2
       discount_amount_cents = discount_per_item_cents * num_of_pairs
 
       discount_amount_cents

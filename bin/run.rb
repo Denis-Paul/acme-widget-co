@@ -9,9 +9,9 @@ require_relative '../lib/offers/buy_one_get_one_half_price'
 # Setup Acme Widget Co catalogue
 # Prices are stored in cents to avoid floating-point errors
 CATALOGUE = {
-  'R01' => Product.new(code: 'R01', price_cents: 3295),  # Red Widget - $32.95
-  'G01' => Product.new(code: 'G01', price_cents: 2495),  # Green Widget - $24.95
-  'B01' => Product.new(code: 'B01', price_cents: 795)    # Blue Widget - $7.95
+  'R01' => Product.new('Red Widget', 'R01', 3295), # Cents: 3295
+  'G01' => Product.new('Green Widget', 'G01', 2495), # Cents: 2495
+  'B01' => Product.new('Blue Widget', 'B01', 795) # Cents: 795
 }.freeze
 
 # Setup delivery rules (using cents throughout)

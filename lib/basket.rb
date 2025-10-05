@@ -33,7 +33,7 @@ class Basket
   private
 
   def calculate_subtotal_cents
-    @items.sum(&:price_cents)
+    @items.sum(&:price)
   end
 
   def calculate_discounts_cents
