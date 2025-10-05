@@ -27,7 +27,7 @@ class Basket
 
     # Calculate total in cents, then convert to dollars
     total_cents = discounted_subtotal_cents + delivery_cents
-    (total_cents / 100.0).round(2)
+    (total_cents / 100.0).round(2) # Cents to dollars
   end
 
   private
