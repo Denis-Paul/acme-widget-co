@@ -78,63 +78,29 @@ require_relative 'lib/product'
 require_relative 'lib/delivery_rules/tiered'
 require_relative 'lib/offers/buy_one_get_one_half_price'
 
-# Setup catalogue - prices are in cents to avoid floating-point errors
-catalogue = {
+# Setup catalogue
+CATALOGUE = {
   'R01' => Product.new('Red Widget', 'R01', 3295),
   'G01' => Product.new('Green Widget', 'G01', 2495),
   'B01' => Product.new('Blue Widget', 'B01', 795)
 }.freeze
 
-delivery_rule = DeliveryRules::Tiered.new([
-  { range: 0...5000, cost: 495 },    # Under $50.00: $4.95 delivery
-  { range: 5000...9000, cost: 295 },  # $50.00-$89.99: $2.95 delivery
-  { range: 9000..Float::INFINITY, cost: 0 }  # $90.00+: Free delivery
+# Setup delivery rules
+DELIVERY_RULES = DeliveryRules::Tiered.new([
+  { range: 0...5000, cost: 495 },    # Under $50.00 => $4.95 delivery
+  { range: 5000...9000, cost: 295 },  # $50.00-$89.99 => $2.95 delivery
+  { range: 9000..Float::INFINITY, cost: 0 }  # $90.00+ => Free delivery
 ])
 
-offers = [
+# Setup offers
+OFFERS = [
   Offers::BuyOneGetOneHalfPrice.new(product_code: 'R01')
 ]
 
 # Create basket and add items
-basket = Basket.new(catalogue, delivery_rule, offers)
+basket = Basket.new(CATALOGUE, DELIVERY_RULES, OFFERS)
 
 basket.add('B01')
 basket.add('G01')
 
 puts basket.total # => 37.85
-```
-
-## Extending the System
-
-### Adding a New Delivery Rule
-```ruby
-class DeliveryRules::FlatRate < DeliveryRules::Base
-  def initialize(cost_cents)
-    @cost_cents = cost_cents
-  end
-
-  # @param subtotal_cents [Integer] Order subtotal in cents
-  # @return [Integer] Delivery cost in cents
-  def cost_for(subtotal_cents)
-    @cost_cents  # Always the same cost
-  end
-end
-
-# Usage
-delivery_rule = DeliveryRules::FlatRate.new(500)  # Always $5.00
-```
-
-### Adding a New Offer
-```ruby
-class Offers::BuyTwoGetOneFree < Offers::Base
-  def initialize(product_code:)
-    @product_code = product_code
-  end
-
-  def apply(items)
-    matching = items.select { |i| i.code == @product_code }
-    free_items = matching.size / 3
-    matching.first.price * free_items  # Returns discount in cents
-  end
-end
-```

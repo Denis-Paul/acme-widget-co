@@ -10,15 +10,12 @@ module Offers
       @product_code = product_code
     end
 
-    # This method fulfills the contract from the Offers::Base class
-    # Returns discount amount in cents
-    # @param items [Array<Product>] All items in the basket
-    # @return [Integer] Total discount in cents
+    # Returns discount amount
     def apply(items)
       matching_items = items.select { |item| item.code == @product_code }
       return 0 if matching_items.empty?
 
-      # Calculate discount for every second item (integer division, no rounding needed)
+      # Calculate discount for every second item
       num_of_pairs = matching_items.count / 2
       discount_per_item_cents = matching_items.first.price / 2
       discount_amount_cents = discount_per_item_cents * num_of_pairs

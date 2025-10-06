@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# Shopping basket with configurable delivery rules and offers
-# Uses dependency injection for catalogue hash, delivery rules, and offers
+# Shopping basket
 class Basket
   def initialize(catalogue, delivery_rule, offers = [])
     @catalogue = catalogue

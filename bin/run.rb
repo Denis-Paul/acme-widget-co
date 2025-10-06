@@ -6,19 +6,18 @@ require_relative '../lib/product'
 require_relative '../lib/delivery_rules/tiered'
 require_relative '../lib/offers/buy_one_get_one_half_price'
 
-# Setup Acme Widget Co catalogue
-# Prices are stored in cents to avoid floating-point errors
+# Setup catalogue
 CATALOGUE = {
-  'R01' => Product.new('Red Widget', 'R01', 3295), # Cents: 3295
-  'G01' => Product.new('Green Widget', 'G01', 2495), # Cents: 2495
-  'B01' => Product.new('Blue Widget', 'B01', 795) # Cents: 795
+  'R01' => Product.new('Red Widget', 'R01', 3295), # 3295 cents
+  'G01' => Product.new('Green Widget', 'G01', 2495),
+  'B01' => Product.new('Blue Widget', 'B01', 795)
 }.freeze
 
-# Setup delivery rules (using cents throughout)
+# Setup delivery rules
 DELIVERY_RULES = DeliveryRules::Tiered.new([
-  { range: 0...5000, cost: 495 },    # Under $50.00: $4.95 delivery
-  { range: 5000...9000, cost: 295 },  # $50.00-$89.99: $2.95 delivery
-  { range: 9000..Float::INFINITY, cost: 0 }  # $90.00+: Free delivery
+  { range: 0...5000, cost: 495 },    # Under $50.00 => $4.95 delivery
+  { range: 5000...9000, cost: 295 },  # $50.00-$89.99 => $2.95 delivery
+  { range: 9000..Float::INFINITY, cost: 0 }  # $90.00+ => Free delivery
 ])
 
 # Setup offers
@@ -26,7 +25,7 @@ OFFERS = [
   Offers::BuyOneGetOneHalfPrice.new(product_code: 'R01')
 ]
 
-# Helper method to create and run a basket example
+# Create and run a basket example
 def run_example(product_codes, expected)
   basket = Basket.new(CATALOGUE, DELIVERY_RULES, OFFERS)
 
